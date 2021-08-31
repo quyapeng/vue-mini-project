@@ -1,0 +1,23 @@
+{
+  "name": "vue-mini-project",
+  "version": "1.0.0",
+  "description": "vue-mini-project vue-mini 实现",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quyapeng/vue-mini-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quyapeng/vue-mini-project/issues"
+  },
+  "homepage": "https://github.com/quyapeng/vue-mini-project#readme",
+  "dependencies": {
+    "@vue/reactivity": "^3.2.6"
+  }
+}
