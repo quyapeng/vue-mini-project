@@ -3,8 +3,9 @@
 // }
 // 当a发生变更了，b自动更新
 const { effect, reactive } = require("@vue/reactivity");
-// ref,number,bealoon
+// ref,--> number,bealoon,string
 // reactive 对象
+// 声明一个 响应式对象
 let a = reactive({
   value: 1,
 });
