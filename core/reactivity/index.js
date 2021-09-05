@@ -16,8 +16,8 @@ class Dep {
     this.depend();
     return this._val;
   }
-  set value(newval) {
-    this._val = newval;
+  set value(newVal) {
+    this._val = newVal;
     // 值更新完毕之后再去通知
     this.notice();
   }
@@ -34,23 +34,23 @@ class Dep {
   }
 }
 
-function effectWatch(effect) {
+export function effectWatch(effect) {
   // 收集依赖
   currentEffect = effect;
   effect();
   // dep.depend();
   currentEffect = null;
 }
-const dep = new Dep(10);
-let b;
-effectWatch(() => {
-  console.log("effectWatch");
-  b = dep.value + 10;
-  console.log(dep);
-});
+// const dep = new Dep(10);
+// let b;
+// effectWatch(() => {
+//   // console.log("effectWatch");
+//   // b = dep.value + 10;
+//   // console.log(dep);
+// });
 
 // 值发生变化
-dep.value = 20;
+// dep.value = 20;
 // dep.notice();
 // dep ->单个值，
 // object -> 单个key 是一个dep
@@ -63,18 +63,49 @@ dep.value = 20;
 // Object.defineProperty;定义改变属性， 属性描述符有get 和set 方法，属性要一个一个去处理，执行周期在初始化，性能消耗很大
 // vue3 用的 proxy,一次拦截，不需要具体到每一个属性，执行一次，
 
-function reactive(raw) {
-  // 让我
+const targetMap = new Map();
+function getDep(target, key) {
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    depsMap = new Map();
+    targetMap.set(target, depsMap);
+  }
+  let dep = depsMap.get(key);
+  if (!dep) {
+    dep = new Dep();
+    depsMap.set(key, dep);
+  }
+  return dep;
+}
+export function reactive(raw) {
+  //
   return new Proxy(raw, {
     get(target, key) {
-      console.log("get", target, key);
+      // console.log("get", target, key);
+      const dep = getDep(target, key);
+      // 收集依赖
+      dep.depend();
       return Reflect.get(target, key);
+    },
+    // 触发依赖
+    set(target, key, value) {
+      // 获取到dep对象
+      const dep = getDep(target, key);
+      // 先更新值再通知
+      const result = Reflect.set(target, key, value);
+      dep.notice();
+      return result;
     },
   });
 }
 
 const user = reactive({
-  name: "tom",
   age: 19,
 });
-user.age;
+let double;
+effectWatch(() => {
+  console.log("--rrr--");
+  double = user.age;
+  console.log(double);
+});
+user.age = 20;
