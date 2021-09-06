@@ -1,4 +1,5 @@
 import { effectWatch } from "./reactivity/index.js";
+import { mountElement } from "./renderer/index.js";
 
 // 通用
 export function createApp(rootComponent) {
@@ -8,8 +9,10 @@ export function createApp(rootComponent) {
 
       effectWatch(() => {
         rootContainer.innerHTML = "";
-        const element = rootComponent.render(context);
-        rootContainer.append(element);
+        const subTree = rootComponent.render(context);
+        console.log(subTree);
+        mountElement(subTree, rootContainer);
+        // rootContainer.append(subTree);
       });
     },
   };

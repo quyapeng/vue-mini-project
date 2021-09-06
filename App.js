@@ -19,6 +19,7 @@
 // });
 // a.value = 30;
 import { reactive } from "./core/reactivity/index.js";
+import { h } from "./core/h.js";
 export default {
   // template -> render
   render(context) {
@@ -30,10 +31,21 @@ export default {
 
     // reset
     // document.body.innerText = "";
-    const div = document.createElement("div");
-    div.innerText = context.state.count;
-    //   document.body.append(div);
-    return div;
+    // const div = document.createElement("div");
+    // div.innerText = context.state.count;
+    // //   document.body.append(div);
+    // return div;
+
+    //
+    return h(
+      "div",
+      {
+        id: "app-id",
+        class: "showTime",
+      },
+      // context.state.count
+      [h("p", null, "哈哈"), h("p", null, "嘻嘻")]
+    );
     // });
   },
   setup() {
