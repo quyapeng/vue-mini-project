@@ -6,13 +6,26 @@ export function createApp(rootComponent) {
   return {
     mount(rootContainer) {
       const context = rootComponent.setup();
-
+      const isMounted = false;
+      let prevSubTree;
       effectWatch(() => {
-        rootContainer.innerHTML = "";
-        const subTree = rootComponent.render(context);
-        console.log(subTree);
-        mountElement(subTree, rootContainer);
+        if (!isMounted) {
+          // init
+          rootContainer.innerHTML = "";
+          const subTree = rootComponent.render(context);
+          console.log(subTree);
+          mountElement(subTree, rootContainer);
+          prevSubTree = subTree;
+        } else {
+          // update
+          const subTree = rootComponent.render(context);
+          diff(prevSubTree, subTree);
+          prevSubTree = subTree;
+        }
+
         // rootContainer.append(subTree);
+        // diff
+        // newVnode, oldVnode
       });
     },
   };

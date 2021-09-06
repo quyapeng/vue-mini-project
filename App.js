@@ -44,7 +44,7 @@ export default {
         class: "showTime",
       },
       // context.state.count
-      [h("p", null, "哈哈"), h("p", null, "嘻嘻")]
+      [h("p", null, context.state.count), h("p", null, "嘻嘻")]
     );
     // });
   },

@@ -16,6 +16,7 @@ export function mountElement(vnode, container) {
   // 1.可以接收一个string2.可以接收一个数组
   if (typeof children === "string" || typeof children === "number") {
     // string
+    // 每次更新全量替换。
     const textNode = document.createTextNode(children);
     el.append(textNode);
   } else {
