@@ -6,11 +6,12 @@ export function createApp(rootComponent) {
   return {
     mount(rootContainer) {
       const context = rootComponent.setup();
-      const isMounted = false;
+      let isMounted = false;
       let prevSubTree;
       effectWatch(() => {
         if (!isMounted) {
           // init
+          isMounted = true;
           rootContainer.innerHTML = "";
           const subTree = rootComponent.render(context);
           console.log(subTree);

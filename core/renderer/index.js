@@ -1,3 +1,5 @@
+// diff
+
 // mountElement
 
 export function mountElement(vnode, container) {
