@@ -4,3 +4,4 @@ module.exports = {
     "@babel/preset-typescript",
   ],
 };
+// nodejs 下默认的模块规范是common
