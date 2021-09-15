@@ -8,7 +8,8 @@ class ReactiveEffect {
   run() {
     // fn
     activeEffect = this;
-    this._fn();
+    // this._fn();
+    return this._fn();
   }
 }
 const targetMap = new Map();
@@ -26,6 +27,15 @@ export function track(target, key) {
   dep.add(activeEffect);
 }
 
+export function trigger(target, key) {
+  // 基于 取出dep,调用所有fn
+  let depsMap = targetMap.get(target);
+  let dep = depsMap.get(key);
+  for (const effect of dep) {
+    effect.run();
+  }
+}
+
 let activeEffect;
 
 export function effect(fn) {
@@ -33,14 +43,5 @@ export function effect(fn) {
 
   const _effect = new ReactiveEffect(fn);
   // 调用run方法的时候直接执行fn
-  _effect.run();
-}
-
-export function trigger(target, key) {
-  // j基于 取出dep,调用所有fn
-  let depsMap = targetMap.get(target);
-  let dep = depsMap.get(key);
-  for (const effect of depsMap) {
-    effect.run();
-  }
+  return _effect.run.bind(_effect);
 }
