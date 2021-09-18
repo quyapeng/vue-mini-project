@@ -5,7 +5,6 @@ export function reactive(raw) {
   return new Proxy(raw, {
     get(target, key) {
       // get
-      // {foo:1}
       const res = Reflect.get(target, key);
       track(target, key);
       return res;
