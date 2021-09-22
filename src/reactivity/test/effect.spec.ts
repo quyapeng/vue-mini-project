@@ -38,7 +38,7 @@ describe("effect", () => {
     let dummy;
     let run: any;
     const scheduler = jest.fn(() => {
-      // jest.fn
+      // jest.fn 是创建mock函数最简单的方式，如果么有定义函数内部的实现，jest.fn则会返回undefined作为返回值
       run = runner;
     });
     const obj = reactive({ foo: 1 });
