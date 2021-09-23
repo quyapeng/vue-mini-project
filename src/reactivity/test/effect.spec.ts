@@ -1,4 +1,4 @@
-import { effect } from "../effect";
+import { effect, stop } from "../effect";
 import { reactive } from "../reactive";
 
 describe("effect", () => {
@@ -52,11 +52,11 @@ describe("effect", () => {
     );
     // toHaveBeenCalled用来判断mock函数是否被掉用过
     expect(scheduler).not.toHaveBeenCalled();
-    console.log(dummy);
+    // console.log(dummy);
     expect(dummy).toBe(1);
     // should be c alled first trigger
     obj.foo++;
-    console.log("dummy", dummy);
+    // console.log("dummy", dummy);
     //toHaveBeenCalledTimes 用来判断mock函数调用过几次
     expect(scheduler).toHaveBeenCalledTimes(1);
     // should not run yet
@@ -65,5 +65,42 @@ describe("effect", () => {
     run();
     // should be run
     expect(dummy).toBe(2);
+  });
+
+  // stop 停止响应
+  it("stop", () => {
+    let dummy;
+    const obj = reactive({ prop: 1 });
+    const runner: any = effect(() => {
+      dummy = obj.prop;
+    });
+    obj.prop = 2;
+    expect(dummy).toBe(2);
+    stop(runner);
+    obj.prop = 3;
+    expect(dummy).toBe(2);
+    //
+    runner();
+    expect(dummy).toBe(3);
+  });
+
+  // stop被调用之后，传入的onstop会被执行
+  it("onStop", () => {
+    const obj = reactive({
+      foo: 1,
+    });
+    // 模拟请求服务
+    const onStop = jest.fn();
+    let dummy;
+    const runner = effect(
+      () => {
+        dummy = obj.foo;
+      },
+      {
+        onStop,
+      }
+    );
+    stop(runner); // 调用stop方法后，
+    expect(onStop).toBeCalledTimes(1); // 被调用一次
   });
 });

@@ -1,6 +1,10 @@
+import { extend } from "./shared";
 // 抽离概念
 class ReactiveEffect {
   private _fn: any;
+  deps = [];
+  active = true;
+  onStop?: () => void;
   // 外部直接获取到scheduler ,则使用public
   constructor(fn, public scheduler?) {
     this._fn = fn;
@@ -13,6 +17,20 @@ class ReactiveEffect {
     // this._fn();
     return this._fn();
   }
+  stop() {
+    //清除effect
+    if (this.active) {
+      cleanupEffect(this);
+      if (this.onStop) this.onStop();
+      this.active = false;
+    }
+  }
+}
+
+function cleanupEffect(effect) {
+  effect.deps.forEach((dep: any) => {
+    dep.delete(effect);
+  });
 }
 const targetMap = new Map();
 export function track(target, key) {
@@ -26,7 +44,8 @@ export function track(target, key) {
     dep = new Set();
     depsMap.set(key, dep);
   }
-  dep.add();
+  dep.add(activeEffect);
+  activeEffect.deps.push(dep);
 }
 
 export function trigger(target, key) {
@@ -47,9 +66,17 @@ let activeEffect;
 export function effect(fn, options: any = {}) {
   // fn
   const _effect = new ReactiveEffect(fn, options.scheduler);
+  // _effect.onStop = options.onStop;
+  extend(_effect, options);
+
   _effect.run();
   // 调用run方法的时候直接执行fn
   let runner: any = _effect.run.bind(_effect);
-  // runner.effect = _effect;
+  runner.effect = _effect;
   return runner;
+}
+
+export function stop(runner) {
+  //
+  runner.effect.stop();
 }
