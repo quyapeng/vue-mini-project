@@ -1,6 +1,6 @@
 describe("readonly", () => {
   it("happy path", () => {
     // readonly
-    console.log("test");
+    console.log("test", expect);
   });
 });
