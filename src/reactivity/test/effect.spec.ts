@@ -77,7 +77,10 @@ describe("effect", () => {
     obj.prop = 2;
     expect(dummy).toBe(2);
     stop(runner);
-    obj.prop = 3;
+    // 这里触发set,重新收集依赖，触发track
+    // obj.prop = 3;
+    // 这里相当于 obj.prop = obj.prop + 1; 触发get,set。get操作重新触发收集依赖
+    obj.prop++;
     expect(dummy).toBe(2);
     //
     runner();
