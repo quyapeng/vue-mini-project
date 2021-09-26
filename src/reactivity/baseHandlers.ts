@@ -1,4 +1,5 @@
 import { track, trigger } from "./effect";
+import { ReactiveFlags } from "./reactive";
 
 // 定义出来只调用一次，然后存储在变量get中，后续不需要每次都去调用，缓存机制，
 const get = createGetter();
@@ -11,6 +12,11 @@ function createGetter(isReadonly = false) {
   //  默认值为false
   // 是否是只读
   return function get(target, key) {
+    //
+    if (key === ReactiveFlags.IS_REACTIVE) {
+      return !isReadonly;
+    }
+
     const res = Reflect.get(target, key);
 
     if (!isReadonly) track(target, key);
