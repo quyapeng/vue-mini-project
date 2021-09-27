@@ -1,5 +1,6 @@
 import { track, trigger } from "./effect";
-import { ReactiveFlags } from "./reactive";
+import { reactive, ReactiveFlags, readonly } from "./reactive";
+import { isObject } from "./shared";
 
 // 定义出来只调用一次，然后存储在变量get中，后续不需要每次都去调用，缓存机制，
 const get = createGetter();
@@ -15,9 +16,15 @@ function createGetter(isReadonly = false) {
     //
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadonly;
+    } else if (key === ReactiveFlags.IS_READONLY) {
+      return isReadonly;
     }
 
     const res = Reflect.get(target, key);
+
+    if (isObject(res)) {
+      return isReadonly ? readonly(res) : reactive(res);
+    }
 
     if (!isReadonly) track(target, key);
     return res;
