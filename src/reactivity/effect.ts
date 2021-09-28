@@ -43,12 +43,13 @@ function cleanupEffect(effect) {
   effect.deps.forEach((dep: any) => {
     dep.delete(effect);
   });
+  // 把effect.deps清空
   effect.deps.length = 0;
 }
 const targetMap = new Map();
 export function track(target, key) {
   if (!isTracking()) return;
-
+  // target -> key -> dep
   let depsMap = targetMap.get(target);
   if (!depsMap) {
     depsMap = new Map();
@@ -59,20 +60,29 @@ export function track(target, key) {
     dep = new Set();
     depsMap.set(key, dep);
   }
-  //如果已经有了，就不在添加
+  // 函数抽离
+  trackEffect(dep);
+}
+export function trackEffect(dep) {
+  //看看dep之前有没有添加过，如果已经添加过，就不在添加
   if (dep.has(activeEffect)) return;
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
 
-function isTracking() {
-  return activeEffect && shouldTrack;
+export function isTracking() {
+  return activeEffect !== undefined && shouldTrack;
 }
 
 export function trigger(target, key) {
   // 基于 取出dep,调用所有fn
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
+  triggerEffect(dep);
+}
+
+// 从trigger中抽离
+export function triggerEffect(dep) {
   for (const effect of dep) {
     // console.log("effect", effect);
     if (effect.scheduler) {
