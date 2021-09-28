@@ -1,4 +1,4 @@
-import { isReactive, reactive } from "../reactive";
+import { isReactive, reactive, isProxy } from "../reactive";
 
 describe("reactive", () => {
   it.skip("happy path", () => {
@@ -9,9 +9,9 @@ describe("reactive", () => {
     expect(observed.foo).toBe(1);
     expect(isReactive(observed)).toBe(true);
     expect(isReactive(original)).toBe(false);
-
     expect(isReactive(observed.foo)).toBe(true);
-    // expect(isReactive(original.foo)).toBe(false);
+    // isproxy
+    expect(isProxy(observed)).toBe(true);
   });
   //
   it("nested reactive", () => {
@@ -29,4 +29,5 @@ describe("reactive", () => {
     expect(isReactive(observed.array)).toBe(true);
     expect(isReactive(observed.array[0])).toBe(true);
   });
+  //
 });

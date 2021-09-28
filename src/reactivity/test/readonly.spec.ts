@@ -1,4 +1,4 @@
-import { readonly, isReadonly } from "../reactive";
+import { readonly, isReadonly, isProxy } from "../reactive";
 
 describe("readonly", () => {
   it("happy path", () => {
@@ -11,6 +11,9 @@ describe("readonly", () => {
 
     expect(isReadonly(wrapped.bar)).toBe(true);
     expect(isReadonly(original.bar)).toBe(false);
+
+    // isProxy
+    expect(isProxy(wrapped)).toBe(true);
   });
 
   // 当调用set的时候给一个警告提示
