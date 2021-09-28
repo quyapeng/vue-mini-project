@@ -3,8 +3,8 @@ import { trackEffect, triggerEffect, isTracking } from "./effect";
 import { hasChanged, isObject } from "./shared";
 
 // ref是一个单值，1 true '2'
-// proxy针对 object
-//
+// proxy 只针对 object
+// 单值类型，通过对象来包裹。
 
 // ref impl  接口缩写
 class refImpl {
