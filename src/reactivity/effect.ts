@@ -3,7 +3,7 @@ let activeEffect;
 let shouldTrack;
 
 // 抽离概念
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any;
   deps = [];
   active = true;
