@@ -1,7 +1,10 @@
 {
   "name": "vue-mini-project",
   "version": "1.0.0",
-  "main": "index.js",
+  // cjs => main
+  // esm -> module
+  "main": "lib/guide-mini-vue.cjs.js",
+  "module": "lib/guide-mini-vue.esm.js",
   "repository": "git@github.com:quyapeng/vue-mini-project.git",
   "author": "quyp <1095698022@qq.com>",
   "license": "MIT",
