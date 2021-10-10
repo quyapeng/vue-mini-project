@@ -1,6 +1,6 @@
 import { reactive } from "./reactive";
 import { trackEffect, triggerEffect, isTracking } from "./effect";
-import { hasChanged, isObject } from "./shared";
+import { hasChanged, isObject } from "../shared/index";
 
 // ref是一个单值，1 true '2'
 // proxy 只针对 object
