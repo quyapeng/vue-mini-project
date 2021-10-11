@@ -10,8 +10,10 @@ export const App = {
         id: "root",
         class: ["red", "hard "],
       },
-      // "hi, mini"
-      [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
+      // setupState
+      // this.$el
+      "hi, " + this.msg
+      // [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
     );
   },
 
