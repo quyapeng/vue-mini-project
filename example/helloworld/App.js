@@ -21,7 +21,7 @@ export const App = {
     // composition api
 
     return {
-      msg: "mini-vue",
+      msg: "mini-vue 哈哈",
     };
   },
 };

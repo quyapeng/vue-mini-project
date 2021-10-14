@@ -50,6 +50,7 @@ function handleSetupResult(instance, setupResult) {
   if (typeof setupResult === "object") {
     instance.setupState = setupResult;
   }
+  console.log("setupResult", setupResult);
 
   finishComponentSetup(instance);
 }
