@@ -1,3 +1,4 @@
+import { PublicInstanceProxyHandlers } from "./componentPublicinstance";
 // component
 export function createComponentInstance(vnode) {
   const component = {
@@ -16,23 +17,31 @@ export function setupComponent(instance) {
 
   setupStatefulComponent(instance);
 }
-
+// 组件实例对象
 function setupStatefulComponent(instance: any) {
   // setup返回值
   const Component = instance.type;
   // ctx
+  // 1.初始化时，创建一个代理对象
+  // 2.调用render的时候，将代理对象绑定到this
   instance.proxy = new Proxy(
-    {},
-    {
-      get(target, key) {
-        // key -> msg
-        // setupState
-        const { setupState } = instance;
-        if (key in setupState) {
-          return setupState[key];
-        }
-      },
-    }
+    { _: instance },
+    PublicInstanceProxyHandlers
+    // {
+    //   get(target, key) {
+    //     // key -> msg
+    //     // setupState
+    //     const { setupState } = instance;
+    //     if (key in setupState) {
+    //       return setupState[key];
+    //     }
+
+    //     // key -> $el
+    //     if (key === "$el") {
+    //       return instance.vnode.$el;
+    //     }
+    //   },
+    // }
   );
 
   const { setup } = Component;

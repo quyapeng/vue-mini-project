@@ -26,23 +26,13 @@ function processComponent(vnode, container) {
   mountComponent(vnode, container);
 }
 
-function mountComponent(vnode: any, container: any) {
+function mountComponent(initialVNode: any, container: any) {
   // 通过虚拟节点，创建组件实例对象
-  const instance = createComponentInstance(vnode);
+  const instance = createComponentInstance(initialVNode);
   setupComponent(instance);
-  setupRenderEffect(instance, container);
+  setupRenderEffect(instance, initialVNode, container);
 }
 
-function setupRenderEffect(instance: any, container: any) {
-  const { proxy } = instance;
-
-  const subTree = instance.render.call(proxy);
-
-  // vnode-> patch
-
-  // vnode-> element -> mountElement
-  patch(subTree, container);
-}
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container);
 }
@@ -55,8 +45,11 @@ function mountElement(vnode: any, container: any) {
   // el.setAttribute('id', 'root');
 
   // document.body.append(el)
+  // vnode 是element的
   const { type, props, children } = vnode;
-  const el = document.createElement(type);
+  const el = (vnode.el = document.createElement(type));
+
+  // children
   if (typeof children === "string") {
     el.textContent = children;
   } else if (Array.isArray(children)) {
@@ -64,7 +57,7 @@ function mountElement(vnode: any, container: any) {
     // children.forEach((v) => {
     //   patch(v, el);
     // });
-    mountChildren(children, el);
+    mountChildren(vnode, el);
   }
 
   for (const key in props) {
@@ -74,8 +67,19 @@ function mountElement(vnode: any, container: any) {
   container.append(el);
 }
 
-function mountChildren(children, el) {
+function mountChildren({ children }, el) {
   children.forEach((v) => {
     patch(v, el);
   });
+}
+
+function setupRenderEffect(instance: any, initialVNode, container: any) {
+  const { proxy } = instance;
+  const subTree = instance.render.call(proxy);
+  // vnode-> patch
+  // vnode-> element -> mountElement
+  patch(subTree, container);
+
+  // 所有element处理完
+  initialVNode.el = subTree.el;
 }

@@ -10,8 +10,8 @@ export const App = {
         id: "root",
         class: ["red", "hard "],
       },
-      // setupState
-      // this.$el
+      // setupState 中没有els
+      // this.$el 当前组件的根元素
       "hi, " + this.msg
       // [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
     );
@@ -19,9 +19,8 @@ export const App = {
 
   setup() {
     // composition api
-
     return {
-      msg: "mini-vue 哈哈",
+      msg: "mini-vue",
     };
   },
 };
