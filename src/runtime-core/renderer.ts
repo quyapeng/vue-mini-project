@@ -7,6 +7,9 @@ export function render(vnode, container) {
 }
 
 function patch(vnode, container) {
+  // shapeflags vnode->flag
+  // elementflag
+
   // patch
   // 判断vnode是不是element 是->处理element  不是->不是element就应该是component,则需要处理component
   // vnode.type 是一个字符串就是element,如果是对象，就是component
@@ -49,7 +52,7 @@ function mountElement(vnode: any, container: any) {
   const { type, props, children } = vnode;
   const el = (vnode.el = document.createElement(type));
 
-  // children
+  // text_children
   if (typeof children === "string") {
     el.textContent = children;
   } else if (Array.isArray(children)) {
@@ -57,6 +60,7 @@ function mountElement(vnode: any, container: any) {
     // children.forEach((v) => {
     //   patch(v, el);
     // });
+    // array_children
     mountChildren(vnode, el);
   }
 
