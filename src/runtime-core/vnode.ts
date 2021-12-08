@@ -1,4 +1,4 @@
-import { ShapeFlags } from "../shared/test";
+import { ShapeFlags } from "../shared/ShapeFlag";
 
 //
 export function createVNode(type, props?, children?) {
@@ -11,8 +11,10 @@ export function createVNode(type, props?, children?) {
     el: null,
   };
   if (typeof children === "string") {
-    //
+    // children
     vnode.shapeFlags = vnode.shapeFlags | ShapeFlags.TEXT_CHILDREN;
+  } else if (Array.isArray(children)) {
+    vnode.shapeFlags = ShapeFlags.ARRAY_CHILDREN;
   }
   return vnode;
 }
