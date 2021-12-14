@@ -1,10 +1,12 @@
 import { PublicInstanceProxyHandlers } from "./componentPublicinstance";
+import { initProps } from "./componentProps";
 // component
 export function createComponentInstance(vnode) {
   const component = {
     vnode,
     type: vnode.type,
     setupState: {},
+    props: {},
   };
 
   return component;
@@ -12,7 +14,7 @@ export function createComponentInstance(vnode) {
 
 export function setupComponent(instance) {
   // 初始化
-  // initProps()
+  initProps(instance, instance.vnode.props);
   // initSlots()
 
   setupStatefulComponent(instance);
@@ -48,7 +50,7 @@ function setupStatefulComponent(instance: any) {
 
   if (setup) {
     // function -> 组件的render函数 or object->将object注入当前组件上下文中
-    const setupResult = setup();
+    const setupResult = setup(instance.props);
     handleSetupResult(instance, setupResult);
   }
 }
@@ -59,7 +61,7 @@ function handleSetupResult(instance, setupResult) {
   if (typeof setupResult === "object") {
     instance.setupState = setupResult;
   }
-  console.log("setupResult", setupResult);
+  // console.log("setupResult", setupResult);
 
   finishComponentSetup(instance);
 }

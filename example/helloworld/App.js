@@ -1,4 +1,5 @@
 import { h } from "../../lib/guide-mini-vue.esm.js";
+import { Foo } from "./Foo.js";
 
 // 组件实现
 export const App = {
@@ -16,8 +17,14 @@ export const App = {
       },
       // setupState 中没有els
       // this.$el 当前组件的根元素
-      "hi, " + this.msg
-      // [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
+      // "hi, " + this.msg
+      [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
+      // [
+      //   h("div", {}, "hi," + this.msg),
+      //   h(Foo, {
+      //     count: 1,
+      //   }),
+      // ]
     );
   },
 
