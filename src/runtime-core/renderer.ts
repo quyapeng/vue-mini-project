@@ -84,11 +84,16 @@ function mountElement(vnode: any, container: any) {
 
   for (const key in props) {
     const val = props[key];
-    el.setAttribute(key, val);
+    console.log("key", key, val);
+    if (isOn(key)) {
+      el.addEventListener(key.slice(2).toLowerCase(), val);
+    } else {
+      el.setAttribute(key, val);
+    }
   }
   container.append(el);
 }
-
+const isOn = (key: string) => /^on[A-Z]/.test(key);
 function mountChildren({ children }, el) {
   children.forEach((v) => {
     patch(v, el);

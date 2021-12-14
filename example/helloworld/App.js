@@ -9,6 +9,10 @@ export const App = {
       {
         id: "root",
         class: ["red", "hard "],
+        onClick() {
+          // 注册事件
+          console.log("click");
+        },
       },
       // setupState 中没有els
       // this.$el 当前组件的根元素
