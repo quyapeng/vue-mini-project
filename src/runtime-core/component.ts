@@ -16,7 +16,7 @@ export function setupComponent(instance) {
   // 初始化
   initProps(instance, instance.vnode.props);
   // initSlots()
-
+  debugger;
   setupStatefulComponent(instance);
 }
 // 组件实例对象
@@ -26,25 +26,7 @@ function setupStatefulComponent(instance: any) {
   // ctx
   // 1.初始化时，创建一个代理对象
   // 2.调用render的时候，将代理对象绑定到this
-  instance.proxy = new Proxy(
-    { _: instance },
-    PublicInstanceProxyHandlers
-    // {
-    //   get(target, key) {
-    //     // key -> msg
-    //     // setupState
-    //     const { setupState } = instance;
-    //     if (key in setupState) {
-    //       return setupState[key];
-    //     }
-
-    //     // key -> $el
-    //     if (key === "$el") {
-    //       return instance.vnode.$el;
-    //     }
-    //   },
-    // }
-  );
+  instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers);
 
   const { setup } = Component;
 

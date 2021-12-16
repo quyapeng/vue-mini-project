@@ -21,4 +21,19 @@ export const PublicInstanceProxyHandlers = {
       return publicGetter(instance);
     }
   },
+  // {
+  //   get(target, key) {
+  //     // key -> msg
+  //     // setupState
+  //     const { setupState } = instance;
+  //     if (key in setupState) {
+  //       return setupState[key];
+  //     }
+
+  //     // key -> $el
+  //     if (key === "$el") {
+  //       return instance.vnode.$el;
+  //     }
+  //   },
+  // }
 };

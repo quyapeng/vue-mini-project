@@ -1,10 +1,12 @@
 import { h } from "../../lib/guide-mini-vue.esm.js";
 import { Foo } from "./Foo.js";
 
+window.self = null;
 // 组件实现
 export const App = {
   // .vue 单文件组件是直接写template,当前用render函数
   render() {
+    window.self = this;
     return h(
       "div",
       {
@@ -15,16 +17,17 @@ export const App = {
           console.log("click");
         },
       },
+
       // setupState 中没有els
       // this.$el 当前组件的根元素
       // "hi, " + this.msg
-      [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
-      // [
-      //   h("div", {}, "hi," + this.msg),
-      //   h(Foo, {
-      //     count: 1,
-      //   }),
-      // ]
+      // [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
+      [
+        h("div", {}, "hi," + this.msg),
+        // h(Foo, {
+        //   count: 1,
+        // }),
+      ]
     );
   },
 

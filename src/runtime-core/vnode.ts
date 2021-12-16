@@ -16,6 +16,7 @@ export function createVNode(type, props?, children?) {
   } else if (Array.isArray(children)) {
     vnode.shapeFlags = ShapeFlags.ARRAY_CHILDREN;
   }
+
   return vnode;
 }
 
