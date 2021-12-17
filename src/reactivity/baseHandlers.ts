@@ -1,15 +1,16 @@
 import { track, trigger } from "./effect";
 import { reactive, ReactiveFlags, readonly } from "./reactive";
-import { isObject } from "../shared/index";
+import { isObject, extend } from "../shared/index";
 
 // 定义出来只调用一次，然后存储在变量get中，后续不需要每次都去调用，缓存机制，
 const get = createGetter();
 const set = createSetter();
 const readonlyGet = createGetter(true);
+const shallowReadonlyGet = createGetter(true, true);
 
 // 利用高阶函数
 // 抽离出get函数，两个区别为track是否需要调用，也就是是否需要收集依赖？
-function createGetter(isReadonly = false) {
+function createGetter(isReadonly = false, shallow = false) {
   //  默认值为false
   // 是否是只读
   return function get(target, key) {
@@ -22,6 +23,10 @@ function createGetter(isReadonly = false) {
 
     const res = Reflect.get(target, key);
 
+    // shallow
+    if (shallow) {
+      return res;
+    }
     if (isObject(res)) {
       return isReadonly ? readonly(res) : reactive(res);
     }
@@ -59,3 +64,8 @@ export const readonlyHandlers = {
     return true;
   },
 };
+
+// shallowreadonly
+export const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
+  get: shallowReadonlyGet,
+});

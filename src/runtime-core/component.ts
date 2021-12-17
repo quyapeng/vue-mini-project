@@ -16,7 +16,6 @@ export function setupComponent(instance) {
   // 初始化
   initProps(instance, instance.vnode.props);
   // initSlots()
-  debugger;
   setupStatefulComponent(instance);
 }
 // 组件实例对象

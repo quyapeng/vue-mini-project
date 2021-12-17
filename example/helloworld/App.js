@@ -7,27 +7,30 @@ export const App = {
   // .vue 单文件组件是直接写template,当前用render函数
   render() {
     window.self = this;
+    //
     return h(
       "div",
       {
         id: "root",
-        class: ["red", "hard "],
+        class: ["red", "hard"],
         onClick() {
-          // 注册事件
           console.log("click");
         },
+        onMousedown() {
+          console.log("mousedown");
+        },
       },
-
-      // setupState 中没有els
-      // this.$el 当前组件的根元素
-      // "hi, " + this.msg
-      // [h("p", { class: "red" }, "hi"), h("a", { class: "blue" }, "blue")]
       [
         h("div", {}, "hi," + this.msg),
-        // h(Foo, {
-        //   count: 1,
-        // }),
+        h(Foo, {
+          count: 1,
+        }),
       ]
+      // "hi, " + this.msg
+      // string
+      // "hi, mini-vue"
+      // Array
+      // [h("p", { class:"red"}, "hi"), h("p", {class:"blue"}, "mini-vue")]
     );
   },
 

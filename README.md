@@ -22,3 +22,4 @@ vue-mini 实现
 17. 组件代理对象
 18. shapeflags
 19. 注册事件
+20. props
