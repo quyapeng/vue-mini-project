@@ -17,6 +17,7 @@ function patch(vnode, container) {
 
   // 结构出shapeflag ,看啥是element还是组件
   const { shapeFlags } = vnode;
+  debugger;
   if (shapeFlags & ShapeFlags.ELEMENT) {
     // ELEMENT
     processElement(vnode, container);
