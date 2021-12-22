@@ -1,4 +1,3 @@
-import { isObject } from "../shared/index";
 import { createComponentInstance, setupComponent } from "./component";
 import { ShapeFlags } from "../shared/ShapeFlag";
 export function render(vnode, container) {
@@ -17,7 +16,6 @@ function patch(vnode, container) {
 
   // 结构出shapeflag ,看啥是element还是组件
   const { shapeFlags } = vnode;
-  debugger;
   if (shapeFlags & ShapeFlags.ELEMENT) {
     // ELEMENT
     processElement(vnode, container);
@@ -25,6 +23,7 @@ function patch(vnode, container) {
     // STATEFUL_COMPONENT
     processComponent(vnode, container);
   }
+
   // if (typeof vnode.type === "string") {
   //   // element
   //   processElement(vnode, container);
@@ -86,6 +85,8 @@ function mountElement(vnode: any, container: any) {
   for (const key in props) {
     const val = props[key];
     // console.log("key", key, val);
+    // 以on开头，小驼峰的属性 如onClick
+    const isOn = (key: string) => /^on[A-Z]/.test(key);
     if (isOn(key)) {
       el.addEventListener(key.slice(2).toLowerCase(), val);
     } else {
@@ -94,7 +95,7 @@ function mountElement(vnode: any, container: any) {
   }
   container.append(el);
 }
-const isOn = (key: string) => /^on[A-Z]/.test(key);
+
 function mountChildren({ children }, el) {
   children.forEach((v) => {
     patch(v, el);

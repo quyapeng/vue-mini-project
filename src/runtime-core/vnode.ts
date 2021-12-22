@@ -10,11 +10,13 @@ export function createVNode(type, props?, children?) {
     shapeFlags: getShapeFlag(type),
     el: null,
   };
+
   if (typeof children === "string") {
     // children
-    vnode.shapeFlags = vnode.shapeFlags | ShapeFlags.TEXT_CHILDREN;
+    vnode.shapeFlags |= ShapeFlags.TEXT_CHILDREN;
+    // vnode.shapeFlags = vnode.shapeFlags | ShapeFlags.TEXT_CHILDREN;
   } else if (Array.isArray(children)) {
-    vnode.shapeFlags = ShapeFlags.ARRAY_CHILDREN;
+    vnode.shapeFlags |= ShapeFlags.ARRAY_CHILDREN;
   }
 
   return vnode;

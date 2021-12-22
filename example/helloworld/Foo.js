@@ -4,7 +4,7 @@ export const Foo = {
   setup(props) {
     // 接收传过来的props
     console.log("props", props);
-    // props.count++;
+    props.count++;
     // console.log(props);
   },
 
