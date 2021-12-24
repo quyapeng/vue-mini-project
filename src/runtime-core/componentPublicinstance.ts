@@ -2,6 +2,8 @@ import { hasOwn } from "../shared/index";
 
 const publicProprttiesMap = {
   $el: (i) => i.vnode.el,
+  // 父节点的children
+  $slots: (i) => i.slots,
 };
 
 export const PublicInstanceProxyHandlers = {
