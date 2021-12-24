@@ -23,3 +23,5 @@ vue-mini 实现
 18. shapeflags
 19. 注册事件
 20. props
+21. emit
+22. slots
