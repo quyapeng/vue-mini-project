@@ -1,5 +1,4 @@
-import { createVNode } from "../vnode";
-
+import { createVNode, Fragment } from "../vnode";
 export function renderSlots(slots, name, props) {
   // children -> vnode
   // 是否有slots name
@@ -8,7 +7,9 @@ export function renderSlots(slots, name, props) {
   if (slot) {
     // function
     if (typeof slot === "function") {
-      return createVNode("div", {}, slot(props));
+      // children不可以有数组==》fragment
+      // 只需要吧children渲染出来就可以，不需要渲染此处根节点div
+      return createVNode(Fragment, {}, slot(props));
     }
   }
 }

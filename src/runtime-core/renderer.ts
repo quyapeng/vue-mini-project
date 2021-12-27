@@ -1,11 +1,32 @@
 import { createComponentInstance, setupComponent } from "./component";
 import { ShapeFlags } from "../shared/ShapeFlag";
+import { Fragment, Text } from "./vnode";
 export function render(vnode, container) {
   // 调用patch方法
   patch(vnode, container);
 }
 
 function patch(vnode, container) {
+  // fragment
+  // fragment -->只渲染children
+  const { type, shapeFlag } = vnode;
+
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, container);
+      break;
+    case Text:
+      processText(vnode, container);
+      break;
+
+    default:
+      if (shapeFlag & ShapeFlags.ELEMENT) {
+        processElement(vnode, container);
+      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, container);
+      }
+      break;
+  }
   // shapeflags vnode->flag
   // elementflag
 
@@ -15,14 +36,6 @@ function patch(vnode, container) {
   // console.log(vnode.type);
 
   // 结构出shapeflag ,看啥是element还是组件
-  const { shapeFlags } = vnode;
-  if (shapeFlags & ShapeFlags.ELEMENT) {
-    // ELEMENT
-    processElement(vnode, container);
-  } else if (shapeFlags & ShapeFlags.STATEFUL_COMPONENT) {
-    // STATEFUL_COMPONENT
-    processComponent(vnode, container);
-  }
 
   // if (typeof vnode.type === "string") {
   //   // element
@@ -34,9 +47,19 @@ function patch(vnode, container) {
   // 去处理组件
 }
 
+function processFragment(vnode: any, container: any) {
+  mountChildren(vnode, container);
+}
+
+function processText(vnode: any, container: any) {
+  const { children } = vnode;
+  const textNode = (vnode.el = document.createTextNode(children));
+  container.append(textNode);
+}
+
 function processComponent(vnode, container) {
   // 挂载组件
-  mountComponent(vnode, container);
+  mountChildren(vnode, container);
 }
 
 function mountComponent(initialVNode: any, container: any) {
@@ -97,7 +120,7 @@ function mountElement(vnode: any, container: any) {
 }
 
 function mountChildren({ children }, el) {
-  children.forEach((v) => {
+  children?.forEach((v) => {
     patch(v, el);
   });
 }

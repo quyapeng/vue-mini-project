@@ -11,7 +11,10 @@ export const App = {
       Foo,
       {},
       {
-        header: ({ age }) => h("p", {}, "header" + age),
+        header: ({ age }) => [
+          h("p", {}, "header" + age),
+          createTextVNode("你好呀"),
+        ],
         footer: () => h("p", {}, "footer"),
       }
     );
