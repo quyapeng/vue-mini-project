@@ -1,6 +1,7 @@
 import { createComponentInstance, setupComponent } from "./component";
 import { ShapeFlags } from "../shared/ShapeFlag";
 import { Fragment, Text } from "./vnode";
+
 export function render(vnode, container) {
   // 调用patch方法
   patch(vnode, container);
@@ -47,26 +48,14 @@ function patch(vnode, container) {
   // 去处理组件
 }
 
-function processFragment(vnode: any, container: any) {
-  mountChildren(vnode, container);
-}
-
 function processText(vnode: any, container: any) {
   const { children } = vnode;
   const textNode = (vnode.el = document.createTextNode(children));
   container.append(textNode);
 }
 
-function processComponent(vnode, container) {
-  // 挂载组件
+function processFragment(vnode: any, container: any) {
   mountChildren(vnode, container);
-}
-
-function mountComponent(initialVNode: any, container: any) {
-  // 通过虚拟节点，创建组件实例对象
-  const instance = createComponentInstance(initialVNode);
-  setupComponent(instance);
-  setupRenderEffect(instance, initialVNode, container);
 }
 
 function processElement(vnode: any, container: any) {
@@ -119,10 +108,22 @@ function mountElement(vnode: any, container: any) {
   container.append(el);
 }
 
-function mountChildren({ children }, el) {
-  children?.forEach((v) => {
+function mountChildren(vnode, el) {
+  vnode.children?.forEach((v) => {
     patch(v, el);
   });
+}
+
+function processComponent(vnode, container) {
+  // 挂载组件
+  mountComponent(vnode, container);
+}
+
+function mountComponent(initialVNode: any, container: any) {
+  // 通过虚拟节点，创建组件实例对象
+  const instance = createComponentInstance(initialVNode);
+  setupComponent(instance);
+  setupRenderEffect(instance, initialVNode, container);
 }
 
 function setupRenderEffect(instance: any, initialVNode, container: any) {

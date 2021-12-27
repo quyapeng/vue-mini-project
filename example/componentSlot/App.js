@@ -1,12 +1,12 @@
-import { h } from "../../lib/guide-mini-vue.esm.js";
+import { h, createTextVNode } from "../../lib/guide-mini-vue.esm.js";
 import { Foo } from "./Foo.js";
 
-// 组件实现
+// Fragment 以及 Text
 export const App = {
   name: "App",
   render() {
-    // slot
     const app = h("div", {}, "App");
+    // object key
     const foo = h(
       Foo,
       {},
@@ -18,7 +18,8 @@ export const App = {
         footer: () => h("p", {}, "footer"),
       }
     );
-    // const foo = h(Foo, {}, h("p", {}, "456"));
+    // 数组 vnode
+    // const foo = h(Foo, {}, h("p", {}, "123"));
     return h("div", {}, [app, foo]);
   },
 
