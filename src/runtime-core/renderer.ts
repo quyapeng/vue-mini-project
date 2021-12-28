@@ -10,7 +10,7 @@ export function render(vnode, container) {
 function patch(vnode, container) {
   // fragment
   // fragment -->只渲染children
-  const { type, shapeFlag } = vnode;
+  const { type, shapeFlags } = vnode;
 
   switch (type) {
     case Fragment:
@@ -21,9 +21,9 @@ function patch(vnode, container) {
       break;
 
     default:
-      if (shapeFlag & ShapeFlags.ELEMENT) {
+      if (shapeFlags & ShapeFlags.ELEMENT) {
         processElement(vnode, container);
-      } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
+      } else if (shapeFlags & ShapeFlags.STATEFUL_COMPONENT) {
         processComponent(vnode, container);
       }
       break;
