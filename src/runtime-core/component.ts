@@ -12,6 +12,7 @@ export function createComponentInstance(vnode) {
     props: {},
     emit: () => {},
     slots: {},
+    provides: {},
   };
   component.emit = emit.bind(null, component) as any;
   return component;
@@ -65,6 +66,7 @@ function finishComponentSetup(instance: any) {
 }
 
 // 借助全局变量
+//  高阶使用场景，反对在应用的代码中使用，只能在setup或者生命周期钩子中使用
 let currentInstance = null;
 // getCurrentInstance
 export function getCurrentInstance() {
