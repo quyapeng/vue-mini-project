@@ -36,10 +36,15 @@ function setupStatefulComponent(instance: any) {
   const { setup } = Component;
 
   if (setup) {
+    //
+    // currentInstance = instance;
+    setCurrentInstance(instance);
     // function -> 组件的render函数 or object->将object注入当前组件上下文中
     const setupResult = setup(shallowReadonly(instance.props), {
       emit: instance.emit,
     });
+    // currentInstance = null;
+    setCurrentInstance(null);
     handleSetupResult(instance, setupResult);
   }
 }
@@ -57,4 +62,16 @@ function handleSetupResult(instance, setupResult) {
 function finishComponentSetup(instance: any) {
   const Component = instance.type;
   instance.render = Component.render;
+}
+
+// 借助全局变量
+let currentInstance = null;
+// getCurrentInstance
+export function getCurrentInstance() {
+  return currentInstance;
+}
+
+// 赋值instance ,后续需要可以直接调用方法，而不是重复去赋值，并且控制修改入口，方便调试排查
+function setCurrentInstance(instance) {
+  currentInstance = instance;
 }
