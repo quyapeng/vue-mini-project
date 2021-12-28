@@ -22,17 +22,31 @@ export function provide(key, value) {
   // provide 存
   // key value
   const currentInstance: any = getCurrentInstance();
-  console.log(currentInstance);
   if (currentInstance) {
-    const { provides } = currentInstance;
+    let { provides } = currentInstance;
+    let parentProvides = currentInstance.parent.provides;
+    if (provides === parentProvides) {
+      // init 第一次
+      provides = currentInstance.provides = Object.create(parentProvides);
+    }
     provides[key] = value;
   }
 }
 
-export function inject(key) {
+export function inject(key, defaultValue) {
+  console.log("key", key);
   // inject 取
-  // const currentInstance: any = getCurrentInstance();
-  // if (currentInstance) {
-  //   const { inject } = currentInstance;
-  // }
+  const currentInstance: any = getCurrentInstance();
+  if (currentInstance) {
+    const parentProvides = currentInstance.parent.provides;
+    // console.log("inject", currentInstance);
+    if (key in parentProvides) {
+      return parentProvides[key];
+    } else if (defaultValue) {
+      if (typeof defaultValue === "function") {
+        return defaultValue();
+      }
+      return defaultValue;
+    }
+  }
 }
