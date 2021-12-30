@@ -125,7 +125,7 @@ export function createRenderer(options) {
     const subTree = instance.render.call(proxy);
     // vnode-> patch
     // vnode-> element -> mountElement
-    patch(subTree, container, null);
+    patch(subTree, container, instance);
 
     // 所有element处理完
     initialVNode.el = subTree.el;
