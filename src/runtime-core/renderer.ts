@@ -4,7 +4,11 @@ import { Fragment, Text } from "./vnode";
 import { createAPI } from "./createApp";
 
 export function createRenderer(options) {
-  const { createElement, patchProp, insert } = options;
+  const {
+    createElement: hostCreateElement,
+    patchProp: hostPatchProp,
+    insert: hostInsert,
+  } = options;
 
   function render(vnode, container) {
     // 调用patch方法
@@ -63,7 +67,7 @@ export function createRenderer(options) {
     // 自定义渲染接口customRender
     // new Element() 不依赖平台，依赖接口
     // const el = (vnode.el = document.createElement(type));
-    const el = (vnode.el = createElement(type));
+    const el = (vnode.el = hostCreateElement(type));
 
     // & 运算符判断是否为0的
 
@@ -96,10 +100,10 @@ export function createRenderer(options) {
       //   el.setAttribute(key, val);
       // }
 
-      patchProp(el, key, val);
+      hostPatchProp(el, key, val);
     }
     // container.append(el);
-    insert(el, container);
+    hostInsert(el, container);
   }
 
   function mountChildren(vnode, el, parentComponent) {

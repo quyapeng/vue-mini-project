@@ -1,9 +1,11 @@
 import { createRenderer } from "../runtime-core";
 
 function createElement(type) {
+  console.log("createElement");
   return document.createElement(type);
 }
 function patchProp(el, key, val) {
+  console.log("patchProp");
   //  以on开头，小驼峰的属性 如onClick
   const isOn = (key: string) => /^on[A-Z]/.test(key);
   if (isOn(key)) {
@@ -13,6 +15,7 @@ function patchProp(el, key, val) {
   }
 }
 function insert(el, container) {
+  console.log("insert");
   container.append(el);
 }
 
