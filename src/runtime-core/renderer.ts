@@ -9,6 +9,8 @@ export function createRenderer(options) {
     createElement: hostCreateElement,
     patchProp: hostPatchProp,
     insert: hostInsert,
+    remove: hostRemove,
+    setElementText: hostSetElementText,
   } = options;
 
   function render(n2: any, container) {
@@ -64,10 +66,36 @@ export function createRenderer(options) {
     const newProps = n2.props || {};
 
     const el = (n2.el = n1.el);
+
+    patchChildren(n1, n2, el);
     patchProps(el, oldProps, newProps);
     // children
   }
+  function patchChildren(n1, n2, container) {
+    //
+    const { shapeFlags: prevShapeFlag } = n1;
+    const { shapeFlags: nextShapeFlag } = n2;
 
+    const c1 = n1.children;
+    const c2 = n2.children;
+    if (nextShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        // 1. 把老的children清空
+        // 2. 设置text
+        unmountChildren(n1.children);
+      }
+      if (c1 !== c2) {
+        hostSetElementText(container, c2);
+      }
+    }
+  }
+  function unmountChildren(children) {
+    for (let i = 0; i < children.length; i++) {
+      const el = children[i].el;
+      // remove
+      hostRemove(el);
+    }
+  }
   function patchProps(el, oldProps, newProps) {
     if (oldProps !== newProps) {
       // 属性变更
