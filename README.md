@@ -25,3 +25,5 @@ vue-mini 实现
 20. props
 21. emit
 22. slots
+23. props
+24. children
