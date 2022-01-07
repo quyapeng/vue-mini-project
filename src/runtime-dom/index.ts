@@ -19,7 +19,7 @@ function patchProp(el, key, prevVal, nextVal) {
   }
 }
 function insert(child, parent, anchor) {
-  // parent.append(child);
+  // parent.append(child)
   parent.insertBefore(child, anchor || null);
 }
 

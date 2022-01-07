@@ -13,10 +13,10 @@ export function createRenderer(options) {
     setElementText: hostSetElementText,
   } = options;
 
-  function render(n2: any, container) {
+  function render(vnode: any, container) {
     // 调用patch方法
     // render的时候不需要anchor
-    patch(null, n2, container, null, null);
+    patch(null, vnode, container, null, null);
   }
   // n1  老的
   // n2  新的
@@ -56,7 +56,7 @@ export function createRenderer(options) {
     parentComponent,
     anchor
   ) {
-    mountChildren(n1, n2, container, parentComponent, anchor);
+    mountChildren(n2.children, container, parentComponent, anchor);
   }
 
   function processElement(
@@ -67,7 +67,7 @@ export function createRenderer(options) {
     anchor
   ) {
     if (!n1) {
-      mountElement(n1, n2, container, parentComponent, anchor);
+      mountElement(n2, container, parentComponent, anchor);
     } else {
       patchElement(n1, n2, container, parentComponent, anchor);
     }
@@ -106,7 +106,7 @@ export function createRenderer(options) {
       // new array
       if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
         hostSetElementText(container, "");
-        mountChildren(n1, n2, container, parentComponent, anchor);
+        mountChildren(c2, container, parentComponent, anchor);
       } else {
         //array diff arry
         patchKeyedChildren(c1, c2, container, parentComponent, anchor);
@@ -143,6 +143,7 @@ export function createRenderer(options) {
     while (i <= e1 && i <= e2) {
       const n1 = c1[i];
       const n2 = c2[i];
+
       if (isSameVNodeType(n1, n2)) {
         patch(n1, n2, container, parentComponent, parentAnchor);
       } else {
@@ -164,6 +165,12 @@ export function createRenderer(options) {
       }
     } else if (i > e2) {
       //
+      while (i <= e1) {
+        hostRemove(c1[i].el);
+        i++;
+      }
+    } else {
+      // 乱序的部分
     }
   }
   // 是相同的vnode
@@ -200,13 +207,7 @@ export function createRenderer(options) {
       }
     }
   }
-  function mountElement(
-    n1: any,
-    n2: any,
-    container: any,
-    parentComponent,
-    anchor
-  ) {
+  function mountElement(vnode: any, container: any, parentComponent, anchor) {
     // vnode: type, props, children
     // const el = document.createElement('div');
 
@@ -215,13 +216,13 @@ export function createRenderer(options) {
 
     // document.body.append(el)
     // vnode 是element的
-    const { type, props, children, shapeFlags } = n2;
+    const { type, props, children, shapeFlags } = vnode;
 
     //
     // 自定义渲染接口customRender
     // new Element() 不依赖平台，依赖接口
     // const el = (vnode.el = document.createElement(type));
-    const el = (n2.el = hostCreateElement(type));
+    const el = (vnode.el = hostCreateElement(type));
 
     // & 运算符判断是否为0的
 
@@ -240,11 +241,10 @@ export function createRenderer(options) {
     if (shapeFlags & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlags & ShapeFlags.ARRAY_CHILDREN) {
-      mountChildren(n1, n2, el, parentComponent, anchor);
+      mountChildren(children, el, parentComponent, anchor);
     }
 
     for (const key in props) {
-      const val = props[key];
       // console.log("key", key, val);
       // 以on开头，小驼峰的属性 如onClick
       // const isOn = (key: string) => /^on[A-Z]/.test(key);
@@ -253,20 +253,20 @@ export function createRenderer(options) {
       // } else {
       //   el.setAttribute(key, val);
       // }
-
+      const val = props[key];
       hostPatchProp(el, key, null, val);
     }
     // container.append(el);
     hostInsert(el, container, anchor);
   }
 
-  function mountChildren(n1, n2, el, parentComponent, anchor) {
-    n2.children?.forEach((v) => {
-      patch(null, v, el, parentComponent, anchor);
+  function mountChildren(children, container, parentComponent, anchor) {
+    children?.forEach((v) => {
+      patch(null, v, container, parentComponent, anchor);
     });
   }
 
-  function processComponent(n1, n2, container, parentComponent, anchor) {
+  function processComponent(n1, n2: any, container, parentComponent, anchor) {
     // 挂载组件
     mountComponent(n2, container, parentComponent, anchor);
   }
@@ -289,7 +289,6 @@ export function createRenderer(options) {
     container: any,
     anchor
   ) {
-    console;
     effect(() => {
       if (!instance.isMounted) {
         console.log("init");
