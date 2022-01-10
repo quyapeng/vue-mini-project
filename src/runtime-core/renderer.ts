@@ -141,8 +141,8 @@ export function createRenderer(options) {
     }
     //  右侧
     while (i <= e1 && i <= e2) {
-      const n1 = c1[i];
-      const n2 = c2[i];
+      const n1 = c1[e1];
+      const n2 = c2[e2];
 
       if (isSameVNodeType(n1, n2)) {
         patch(n1, n2, container, parentComponent, parentAnchor);
@@ -164,13 +164,12 @@ export function createRenderer(options) {
         }
       }
     } else if (i > e2) {
-      //
       while (i <= e1) {
         hostRemove(c1[i].el);
         i++;
       }
     } else {
-      // 乱序的部分
+      // 乱序
     }
   }
   // 是相同的vnode

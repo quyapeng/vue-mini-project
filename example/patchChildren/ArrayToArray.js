@@ -101,6 +101,6 @@ export default {
   },
   render() {
     const self = this;
-    return h("div", {}, self.isChange === true ? nextChildren : prevChildren);
+    return h("div", {}, self.isChange ? nextChildren : prevChildren);
   },
 };
