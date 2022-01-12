@@ -179,6 +179,8 @@ export function createRenderer(options) {
       const keyToNewIndexMap = new Map();
       const newIndexToOldIndexMap = new Array(toBePatched);
 
+      let moved = false;
+      let maxNewIndexSoFar = 0;
       //
       for (let i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0;
 
@@ -212,6 +214,11 @@ export function createRenderer(options) {
         if (newIndex === undefined) {
           hostRemove(prevChild.el);
         } else {
+          if (newIndex >= maxNewIndexSoFar) {
+            maxNewIndexSoFar = newIndex;
+          } else {
+            moved = true;
+          }
           // 已存在 避免i为0时出错，此处需要+1
           newIndexToOldIndexMap[newIndex - s2] = i + 1;
           patch(prevChild, c2[newIndex], container, parentComponent, null);
@@ -219,19 +226,27 @@ export function createRenderer(options) {
         }
       }
 
-      const insreasingNewIndexSequence = getSequence(newIndexToOldIndexMap);
+      const insreasingNewIndexSequence = moved
+        ? getSequence(newIndexToOldIndexMap)
+        : [];
       // console.log("insreasingNewIndexSequence", insreasingNewIndexSequence);
       let j = insreasingNewIndexSequence.length - 1;
+
+      //
       for (let i = toBePatched - 1; i >= 0; i--) {
         const nextIndex = i + s2;
         const nextChild = c2[nextIndex];
         const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null;
-
-        if (j < 0 || i !== insreasingNewIndexSequence[j]) {
-          console.log("移动位置", insreasingNewIndexSequence[j]);
-          hostInsert(nextChild.el, container, anchor);
-        } else {
-          j--;
+        if (newIndexToOldIndexMap[i] === 0) {
+          // 创建新的
+          patch(null, nextChild, container, parentComponent, anchor);
+        } else if (moved) {
+          if (j < 0 || i !== insreasingNewIndexSequence[j]) {
+            console.log("移动位置", insreasingNewIndexSequence[j]);
+            hostInsert(nextChild.el, container, anchor);
+          } else {
+            j--;
+          }
         }
       }
     }
