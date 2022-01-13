@@ -27,3 +27,4 @@ vue-mini 实现
 22. slots
 23. props
 24. children
+25. diff
