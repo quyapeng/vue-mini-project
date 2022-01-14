@@ -4,6 +4,8 @@ const publicProprttiesMap = {
   $el: (i) => i.vnode.el,
   // 父节点的children
   $slots: (i) => i.slots,
+  //
+  $props: (i) => i.props,
 };
 
 export const PublicInstanceProxyHandlers = {

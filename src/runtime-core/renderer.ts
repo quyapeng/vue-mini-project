@@ -3,6 +3,7 @@ import { ShapeFlags } from "../shared/ShapeFlag";
 import { Fragment, Text } from "./vnode";
 import { createAPI } from "./createApp";
 import { effect } from "../reactivity/effect";
+import { shouldUpdateComponent } from "./componentUpdateUtils";
 
 export function createRenderer(options) {
   const {
@@ -346,7 +347,24 @@ export function createRenderer(options) {
 
   function processComponent(n1, n2: any, container, parentComponent, anchor) {
     // 挂载组件
-    mountComponent(n2, container, parentComponent, anchor);
+    if (!n1) {
+      // n1没有的时候才是mount
+      mountComponent(n2, container, parentComponent, anchor);
+    } else {
+      // 有值的时候是更新
+      updateComponent(n1, n2);
+    }
+  }
+  function updateComponent(n1, n2) {
+    const instance = (n2.component = n1.component);
+    if (shouldUpdateComponent(n1, n2)) {
+      // component最新
+      instance.next = n2;
+      instance.update();
+    } else {
+      n2.el = n1.el;
+      n2.vnode = n2;
+    }
   }
 
   function mountComponent(
@@ -356,7 +374,10 @@ export function createRenderer(options) {
     anchor
   ) {
     // 通过虚拟节点，创建组件实例对象
-    const instance = createComponentInstance(initialVNode, parentComponent);
+    const instance = (initialVNode.component = createComponentInstance(
+      initialVNode,
+      parentComponent
+    ));
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container, anchor);
   }
@@ -367,7 +388,7 @@ export function createRenderer(options) {
     container: any,
     anchor
   ) {
-    effect(() => {
+    instance.update = effect(() => {
       if (!instance.isMounted) {
         console.log("init");
         const { proxy } = instance;
@@ -379,6 +400,15 @@ export function createRenderer(options) {
 
         instance.isMounted = true;
       } else {
+        // 更新当前组件实例上的属性 props
+        // 需要一个更新之后的虚拟节点
+        const { next, vnode } = instance;
+        if (next) {
+          //
+          next.el = vnode.el;
+          updateComponentPreRender(instance, next);
+        }
+        //
         console.log("update");
         const { proxy } = instance;
         const subTree = instance.render.call(proxy);
@@ -394,7 +424,13 @@ export function createRenderer(options) {
     createApp: createAPI(render),
   };
 }
+function updateComponentPreRender(instance, nextVNode) {
+  // 重新设置vnode,并清空
+  instance.vnode = nextVNode;
 
+  instance.next = null;
+  instance.props = nextVNode.props;
+}
 function getSequence(arr) {
   const p = arr.slice();
   const result = [0];

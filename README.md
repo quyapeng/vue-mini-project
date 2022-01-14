@@ -28,3 +28,4 @@ vue-mini 实现
 23. props
 24. children
 25. diff
+26. 组件更新
