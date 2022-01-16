@@ -2,7 +2,7 @@ import {
   h,
   ref,
   getCurrentInstance,
-  // nextTick,
+  nextTick,
 } from "../../lib/guide-mini-vue.esm.js";
 
 export const App = {
@@ -10,21 +10,19 @@ export const App = {
   setup() {
     const count = ref(1);
     const instance = getCurrentInstance();
-
+    // 视图更新是异步
     function onClick() {
       for (let i = 0; i < 100; i++) {
         console.log("update");
         count.value = i;
       }
-
-      debugger;
       console.log(instance);
-      // nextTick(() => {
-      //   console.log(instance);
-      // });
+      nextTick(() => {
+        console.log(instance);
+      });
 
-      // await nextTick()
-      // console.log(instance)
+      await nextTick();
+      console.log(instance);
     }
 
     return {
