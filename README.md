@@ -29,3 +29,4 @@ vue-mini 实现
 24. children
 25. diff
 26. 组件更新
+27. nextTick
