@@ -30,3 +30,4 @@ vue-mini 实现
 25. diff
 26. 组件更新
 27. nextTick
+28. test
