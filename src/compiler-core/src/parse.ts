@@ -49,7 +49,7 @@ function parseInterpolation(context) {
   //   context.source = context.source.slice(
   //     rawContentLength + closeDelimiter.length
   //   );
-  console.log("context", context.source);
+  console.log("context", context);
 
   return {
     type: NodeTypes.INTERPOLATION,
