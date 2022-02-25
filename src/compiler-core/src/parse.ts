@@ -47,7 +47,13 @@ function parseTag(context, type) {
   const tag = match[1];
   //  match 为 [ '<div', 'div', index: 0, input: '<div></div>', groups: undefined ]
   // 正则匹配出的第一位是'<div',最后一位'>'也需要
+  /*
+  源码此处是分两步处理 我喜欢一次搞定。
+  advanceBy(context, match[0].length);
+  advanceBy(context, 1);
+  **/
   advanceBy(context, match[0].length + 1);
+
   console.log(context.source);
   if (type == TagType.End) return;
   return {
@@ -58,7 +64,6 @@ function parseTag(context, type) {
 function parseElement(context) {
   // 1.解析 div
   // 2.删除解析过的node
-  //
   const element = parseTag(context, TagType.Start);
   parseTag(context, TagType.End);
   console.log("1111", context.source);
