@@ -1,6 +1,12 @@
 import { NodeTypes } from "./ast";
 const openDelimiter = "{{";
 const closeDelimiter = "}}";
+
+const enum TagType {
+  Start,
+  End,
+}
+
 function createParserContext(content: string) {
   return {
     source: content,
@@ -18,11 +24,43 @@ export function baseParse(content: string) {
 function parseChildren(context) {
   const nodes: any = [];
   let node: any;
-  if (context.source.startsWith(openDelimiter)) {
+  let s = context.source;
+  if (s.startsWith(openDelimiter)) {
     node = parseInterpolation(context);
+  } else if (s[0] == "<") {
+    // < 开始
+    if (/[a-z]/i.test(s[1])) {
+      // 第二位是字母，不限制大小
+      console.log("element div", s);
+      node = parseElement(context);
+    }
   }
   nodes.push(node);
   return nodes;
+}
+
+function parseTag(context, type) {
+  // 1.解析 div
+  // 2.删除解析过的node
+  const match: any = /^<\/?([a-zA-Z]*)/i.exec(context.source);
+  console.log("match", match);
+  const tag = match[1];
+  advanceBy(context, match[0].length + 1);
+  console.log(context.source);
+  if (type == TagType.End) return;
+  return {
+    type: NodeTypes.ELEMENT,
+    tag,
+  };
+}
+function parseElement(context) {
+  // 1.解析 div
+  // 2.删除解析过的node
+  //
+  const element = parseTag(context, TagType.Start);
+  parseTag(context, TagType.End);
+  console.log("1111", context.source);
+  return element;
 }
 
 function parseInterpolation(context) {
