@@ -45,6 +45,8 @@ function parseTag(context, type) {
   const match: any = /^<\/?([a-zA-Z]*)/i.exec(context.source);
   console.log("match", match);
   const tag = match[1];
+  //  match 为 [ '<div', 'div', index: 0, input: '<div></div>', groups: undefined ]
+  // 正则匹配出的第一位是'<div',最后一位'>'也需要
   advanceBy(context, match[0].length + 1);
   console.log(context.source);
   if (type == TagType.End) return;
