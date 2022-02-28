@@ -35,6 +35,7 @@ vue-mini 实现
 30. [x] 插值解析
 31. [x] 解析element标签
 32. [x] 解析text
+33. [x] 解析text+element
 
 做个推荐，精品源码课程。路途遥远，回头是岸。
 

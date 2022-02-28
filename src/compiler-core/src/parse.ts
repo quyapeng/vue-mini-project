@@ -19,36 +19,59 @@ export function baseParse(content: string) {
   // 创建一个全局的上下文对象
   const context = createParserContext(content);
 
-  return createRoot(parseChildren(context));
+  return createRoot(parseChildren(context, []));
 }
-function parseChildren(context) {
+function parseChildren(context, ancestors) {
   const nodes: any = [];
-  let node: any;
-  let s = context.source;
-  if (s.startsWith(openDelimiter)) {
-    node = parseInterpolation(context);
-  } else if (s[0] == "<") {
-    // < 开始
-    if (/[a-z]/i.test(s[1])) {
-      // 第二位是字母，不限制大小
-      console.log("element div", s);
-      node = parseElement(context);
+  while (!isEnd(context, ancestors)) {
+    let node: any;
+    let s = context.source;
+    if (s.startsWith(openDelimiter)) {
+      node = parseInterpolation(context);
+    } else if (s[0] == "<") {
+      // < 开始
+      if (/[a-z]/i.test(s[1])) {
+        // 第二位是字母，不限制大小
+        console.log("element div", s);
+        node = parseElement(context, ancestors);
+      }
+    }
+
+    //
+    if (!node) {
+      node = parseText(context);
+    }
+    nodes.push(node);
+  }
+
+  return nodes;
+}
+function isEnd(context, ancestors) {
+  // 1. source 有值
+  // 2. 当遇到结束标签的时候
+  const s = context.source;
+  console.log("s", ancestors);
+  if (s.startsWith("</")) {
+    for (let i = 0; i < ancestors.length; i++) {
+      const tag = ancestors[i].tag;
+      if (s.slice(2, 2 + tag.length) === tag) {
+        return true;
+      }
     }
   }
 
-  //
-  if (!node) {
-    node = parseText(context);
-  }
-  nodes.push(node);
-  return nodes;
+  // if (parentTag && s.startsWith(`</${parentTag}>`)) {
+
+  //   return true;
+  // }
+  return !context.source;
 }
 
 function parseTag(context, type) {
   // 1.解析 div
   // 2.删除解析过的node
   const match: any = /^<\/?([a-zA-Z]*)/i.exec(context.source);
-  console.log("match", match);
+  // console.log("match", match);
   const tag = match[1];
   //  match 为 [ '<div', 'div', index: 0, input: '<div></div>', groups: undefined ]
   // 正则匹配出的第一位是'<div',最后一位'>'也需要
@@ -69,32 +92,58 @@ function parseTag(context, type) {
 
 function parseTextData(context, length) {
   const content = context.source.slice(0, length);
-  console.log("parseText", context.source);
+  // console.log("parseText", context.source);
   // 推进， 截取掉
   advanceBy(context, length);
   return content;
 }
 function parseText(context) {
+  //
+  let endTokens = ["<", "{{"];
+  let endIndex = context.source.length;
+
+  for (let i = 0; i < endTokens.length; i++) {
+    console.log("context.source", context.source);
+    let index = context.source.indexOf(endTokens[i]);
+    if (index !== -1 && endIndex > index) {
+      // 有
+      endIndex = index;
+    }
+  }
   // 1. 获取到值，
   // const content = context.source.slice(0, context.source.length);
   // console.log("parseText", context.source);
   // // 2. 推进， 截取掉
   // advanceBy(context, content.length);
   // console.log("parseText 为空", context.source);
-  const content = parseTextData(context, context.source.length);
+  const content = parseTextData(context, endIndex);
   // console.log("parseText 为空", context.source);
+  console.log("content", content);
   return {
     type: NodeTypes.TEXT,
     content,
   };
 }
 
-function parseElement(context) {
+function parseElement(context, ancestors) {
   // 1.解析 div
   // 2.删除解析过的node
-  const element = parseTag(context, TagType.Start);
-  parseTag(context, TagType.End);
-  console.log("parseElement", context.source);
+  const element: any = parseTag(context, TagType.Start);
+  ancestors.push(element);
+  element.children = parseChildren(context, ancestors);
+  ancestors.pop();
+
+  console.log("element.tag", element.tag);
+  console.log("context.source", context.source);
+  // 前后tag一致
+  if (context.source.slice(2, 2 + element.tag.length) === element.tag) {
+    parseTag(context, TagType.End);
+  } else {
+    // 报错
+    throw new Error(`缺少结束标签：${element.tag}`);
+  }
+
+  // console.log("parseElement", context.source);
   return element;
 }
 
@@ -123,7 +172,7 @@ function parseInterpolation(context) {
   //   context.source = context.source.slice(
   //     rawContentLength + closeDelimiter.length
   //   );
-  console.log("context", context);
+  // console.log("context", context);
 
   return {
     type: NodeTypes.INTERPOLATION,
