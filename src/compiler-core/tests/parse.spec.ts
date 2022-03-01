@@ -74,10 +74,8 @@ describe("Parse", () => {
   });
 
   // 多加一层
-  test("Nested element", () => {
-    // <div><p>hi,</p>{{message}}<p>123</p></div>
-    const ast = baseParse("<div><p>hi</p>{{message}}<p>123</p></div>");
-
+  test("Nested element ", () => {
+    const ast = baseParse("<div><p>hi</p>{{message}}</div>");
     expect(ast.children[0]).toStrictEqual({
       type: NodeTypes.ELEMENT,
       tag: "div",
@@ -99,25 +97,12 @@ describe("Parse", () => {
             content: "message",
           },
         },
-        {
-          type: NodeTypes.ELEMENT,
-          tag: "p",
-          children: [
-            {
-              type: NodeTypes.TEXT,
-              content: "123",
-            },
-          ],
-        },
       ],
     });
   });
 
   // 内有单个标签，无闭合标签时，给出标签名称的提示
-  test("should throw error when miss end tag", () => {
-    // <div><span></div>
-    const ast = baseParse("<div><span></div>");
-
+  test.only("should throw error when miss end tag", () => {
     expect(() => {
       baseParse("<div><span></div>");
     }).toThrow(`缺少结束标签：span`);
