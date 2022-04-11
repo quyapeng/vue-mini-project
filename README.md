@@ -33,10 +33,7 @@ vue-mini 实现
 28. [x] test
 29. [x] 编译流程
 30. [x] 插值解析
-31. [x] 解析element标签
-32. [x] 解析text
-33. [x] 解析text+element
-
-做个推荐，精品源码课程。路途遥远，回头是岸。
-
-![image](https://user-images.githubusercontent.com/8325281/153360782-b2524eff-f3da-439d-8ccb-371eea665696.png)
+31. [x] 解析 element 标签
+32. [x] 解析 text
+33. [x] 解析 text+element
+34. [ ] 有限状态机
