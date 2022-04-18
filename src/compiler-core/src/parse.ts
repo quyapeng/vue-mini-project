@@ -15,7 +15,7 @@ export function baseParse(content: string) {
 
 function parseChildren(context, ancestors) {
   const nodes: any = [];
-  console.log("isend", !isEnd(context, ancestors));
+  // console.log("isend", !isEnd(context, ancestors));
   while (!isEnd(context, ancestors)) {
     let node;
     let s = context.source;
@@ -60,7 +60,7 @@ function parseText(context) {
   let endIndex = context.source.length;
 
   for (let i = 0; i < endTokens.length; i++) {
-    console.log("context.source", context.source);
+    // console.log("context.source", context.source);
     let index = context.source.indexOf(endTokens[i]);
     if (index !== -1 && endIndex > index) {
       // 有
