@@ -11,6 +11,11 @@ function createTransformContext(root: any, { nodeTransforms = [] }: any): any {
 }
 
 function traverseNode(node: any, { nodeTransforms }) {
+  //
+  // console.log("node", node); 以下内容为定制化，放在入口处由调用方选择是否使用
+  // if (node.type == NodeTypes.TEXT) {
+  //   node.content = node.content + " mini-vue";
+  // }
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i];
     transform(node);
