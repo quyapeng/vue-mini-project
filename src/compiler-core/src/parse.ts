@@ -74,7 +74,7 @@ function parseText(context) {
   // advanceBy(context, content.length);
   // console.log("parseText 为空", context.source);
   const content = parseTextData(context, endIndex);
-  console.log("content", content);
+  // console.log("content", content);
   return {
     type: NodeTypes.TEXT,
     content,
