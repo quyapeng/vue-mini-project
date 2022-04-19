@@ -36,4 +36,5 @@ vue-mini 实现
 31. [x] 解析 element 标签
 32. [x] 解析 text
 33. [x] 解析 text+element
-34. [ ] 有限状态机
+34. [x] 有限状态机
+35. [x] string--> render

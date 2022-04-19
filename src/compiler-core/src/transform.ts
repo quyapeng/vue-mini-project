@@ -1,8 +1,13 @@
-export function transform(root, options) {
+export function transform(root, options = {}) {
   const context = createTransformContext(root, options);
   traverseNode(root, context);
-}
 
+  // 处理codegen root.codegenNode
+  createRootCodegen(root);
+}
+function createRootCodegen(root: any) {
+  root.codegenNode = root.children[0];
+}
 function createTransformContext(root: any, { nodeTransforms = [] }: any): any {
   return {
     root,
