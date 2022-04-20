@@ -1,6 +1,7 @@
 import { baseParse } from "../src/parse";
-import { generate } from "../src/gencode";
+import { generate } from "../src/codegen";
 import { transform } from "../src/transform";
+import { transformExpression } from "../src/transforms/transformExpression";
 
 describe("codegen", () => {
   it("happy path string", () => {
@@ -15,6 +16,16 @@ describe("codegen", () => {
     // 执行run之后，生成一个__snapshots__文件夹，里面生成一个codegen.spec.ts.snap文件，这就是快照内容。
     // 执行run的命令之后➕ -u 代表有意更新,此时就会更新快照内容，方面下次对比最新数据。
 
+    expect(code).toMatchSnapshot();
+  });
+
+  //
+  it("interpolation", () => {
+    const ast = baseParse("{{message}}");
+    transform(ast, {
+      nodeTransforms: [transformExpression],
+    });
+    const { code } = generate(ast);
     expect(code).toMatchSnapshot();
   });
 });
