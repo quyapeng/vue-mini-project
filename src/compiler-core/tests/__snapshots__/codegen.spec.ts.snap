@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`codegen all 1`] = `
+"const { createElementVNode: _createElementVNode } = Vue;
+return function render(_ctx, _cache){return _createElementVNode(\\"div\\"), null,'hi, '+_toDisplayString(message))}"
+`;

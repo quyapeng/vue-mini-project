@@ -1,5 +1,10 @@
+import { isString } from "../../shared";
 import { NodeTypes } from "./ast";
-import { helperMapName, TO_DISPLAY_STRING } from "./runtimeHelpers";
+import {
+  CREATE_ELEMENT_VNODE,
+  helperMapName,
+  TO_DISPLAY_STRING,
+} from "./runtimeHelpers";
 
 // 模块职责划分清晰明确
 export function generate(ast) {
@@ -78,12 +83,42 @@ function genNode(node: any, context) {
     case NodeTypes.SIMPLE_EXPRESSION:
       genExpression(node, context);
       break;
+    case NodeTypes.ELEMENT:
+      genElement(node, context);
+      break;
+    case NodeTypes.COMPOUND_EXPRESSION:
+      genCompoundExpression(node, context);
 
     default:
       break;
   }
 }
 
+function genCompoundExpression(node: any, context: any) {
+  const { push } = context;
+  const { children } = node;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (isString(child)) {
+      push(child);
+    } else {
+      genNode(child, context);
+    }
+  }
+}
+function genElement({ tag, children }: any, context: any) {
+  //
+  const { push, helper } = context;
+  console.log("children", children);
+  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), null,`);
+  // const child = children[0];
+  genNode(children, context);
+  // for (let i = 0; i < children.length; i++) {
+  //   const child = children[i];
+  //   genNode(child, context);
+  // }
+  push(")");
+}
 function genExpression(node: any, context: any) {
   const { push } = context;
   push(`${node.content}`);

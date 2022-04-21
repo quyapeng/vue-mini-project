@@ -2,6 +2,8 @@ import { baseParse } from "../src/parse";
 import { generate } from "../src/codegen";
 import { transform } from "../src/transform";
 import { transformExpression } from "../src/transforms/transformExpression";
+import { transformElement } from "../src/transforms/transformElement";
+import { transformText } from "../src/transforms/transformText";
 
 describe("codegen", () => {
   it("happy path string", () => {
@@ -19,12 +21,33 @@ describe("codegen", () => {
     expect(code).toMatchSnapshot();
   });
 
-  //
+  // interpolation
   it("interpolation", () => {
     const ast = baseParse("{{message}}");
     transform(ast, {
       nodeTransforms: [transformExpression],
     });
+    const { code } = generate(ast);
+    expect(code).toMatchSnapshot();
+  });
+  // element
+  it("element", () => {
+    const ast = baseParse("<div></div>>");
+    transform(ast, {
+      nodeTransforms: [transformElement],
+    });
+    const { code } = generate(ast);
+    expect(code).toMatchSnapshot();
+  });
+
+  // 联合类型
+  it("all", () => {
+    const ast: any = baseParse("<div>hi, {{message}}</div>>");
+    transform(ast, {
+      // 关注执行顺序
+      nodeTransforms: [transformText, transformElement],
+    });
+    // console.log("astttttt", ast.codegenNode.children[0]);
     const { code } = generate(ast);
     expect(code).toMatchSnapshot();
   });
