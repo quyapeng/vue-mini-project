@@ -106,18 +106,39 @@ function genCompoundExpression(node: any, context: any) {
     }
   }
 }
-function genElement({ tag, children }: any, context: any) {
+function genElement({ tag, children, props }: any, context: any) {
   //
   const { push, helper } = context;
-  console.log("children", children);
-  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), null,`);
+  // console.log("children", children);
+  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), ${props},`);
+  // console.log("llll", genNullable([tag, props, children]));
+  genNodeList(genNullable([tag, props, children]), context);
   // const child = children[0];
-  genNode(children, context);
+  // genNode(children, context);
   // for (let i = 0; i < children.length; i++) {
   //   const child = children[i];
   //   genNode(child, context);
   // }
   push(")");
+}
+
+function genNodeList(nodes: any, context) {
+  // console.log("nodes", nodes);
+  const { push } = context;
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    // 如果是string
+    if (isString(node)) {
+      push(node);
+    } else {
+      genNode(node, context);
+    }
+    if (i < nodes.length - 1) push(",");
+  }
+}
+
+function genNullable(args: any) {
+  return args.map((arg) => arg || "null");
 }
 function genExpression(node: any, context: any) {
   const { push } = context;

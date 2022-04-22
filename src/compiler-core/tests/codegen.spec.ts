@@ -44,8 +44,8 @@ describe("codegen", () => {
   it("all", () => {
     const ast: any = baseParse("<div>hi, {{message}}</div>>");
     transform(ast, {
-      // 关注执行顺序
-      nodeTransforms: [transformText, transformElement],
+      // 关注执行顺序,先处理复合类型
+      nodeTransforms: [transformExpression, transformElement, transformText],
     });
     // console.log("astttttt", ast.codegenNode.children[0]);
     const { code } = generate(ast);

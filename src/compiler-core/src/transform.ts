@@ -39,9 +39,12 @@ function traverseNode(node: any, context: any) {
   // }
 
   const { nodeTransforms } = context;
+  const exitFns: any = [];
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i];
-    transform(node, context);
+    // 先收集
+    const onExit = transform(node, context);
+    if (onExit) exitFns.push(onExit);
   }
 
   switch (node.type) {
@@ -54,6 +57,12 @@ function traverseNode(node: any, context: any) {
       break;
     default:
       break;
+  }
+
+  // 先调用后执行，
+  let i = exitFns.length;
+  while (i--) {
+    exitFns[i]();
   }
 }
 function traverseChildren({ children }: any, context: any) {
