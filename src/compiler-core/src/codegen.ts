@@ -88,6 +88,7 @@ function genNode(node: any, context) {
       break;
     case NodeTypes.COMPOUND_EXPRESSION:
       genCompoundExpression(node, context);
+      break;
 
     default:
       break;
@@ -110,7 +111,7 @@ function genElement({ tag, children, props }: any, context: any) {
   //
   const { push, helper } = context;
   // console.log("children", children);
-  push(`${helper(CREATE_ELEMENT_VNODE)}("${tag}"), ${props},`);
+  push(`${helper(CREATE_ELEMENT_VNODE)}(`);
   // console.log("llll", genNullable([tag, props, children]));
   genNodeList(genNullable([tag, props, children]), context);
   // const child = children[0];

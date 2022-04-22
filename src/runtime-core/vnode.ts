@@ -3,7 +3,9 @@ import { ShapeFlags } from "../shared/ShapeFlag";
 export const Fragment = Symbol("Fragment");
 export const Text = Symbol("Text");
 
+export { createVNode as createElementVNode };
 //
+
 export function createVNode(type, props?, children?) {
   // 创建一个虚拟节点
   const vnode = {

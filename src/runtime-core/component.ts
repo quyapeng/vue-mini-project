@@ -65,8 +65,16 @@ function handleSetupResult(instance, setupResult) {
 
   finishComponentSetup(instance);
 }
+
 function finishComponentSetup(instance: any) {
   const Component = instance.type;
+  // template
+  if (compiler && !Component.render) {
+    // render优先级高
+    if (Component.template) {
+      Component.render = compiler(Component.template);
+    }
+  }
   instance.render = Component.render;
 }
 
@@ -81,4 +89,9 @@ export function getCurrentInstance() {
 // 赋值instance ,后续需要可以直接调用方法，而不是重复去赋值，并且控制修改入口，方便调试排查
 function setCurrentInstance(instance) {
   currentInstance = instance;
+}
+
+let compiler;
+export function registerRuntimeCompiler(_compiler) {
+  compiler = _compiler;
 }
